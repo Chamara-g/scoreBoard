@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+
+<style type="text/css">
+/* https://gist.github.com/toddparker/32fc9647ecc56ef2b38a */
+
+/* Some basic page styles */
+body {
+  font: 100%/1.5 AvenirNext-Regular, Corbel, "Lucida Grande", "Trebuchet Ms", sans-serif;
+  color: #111; 
+  background-color: #fff;
+  margin: 2em 10%
+}
+
+/* Label styles: style as needed */
+label {
+  display:block;
+  margin: 2em 1em .25em .75em;
+  font-size: 1.25em;
+  color:#333;
+}
+
+/* Container used for styling the custom select, the buttom class adds the bg gradient, corners, etc. */
+.dropdown {
+  position: relative;
+  display:block;
+  margin-top:0.5em;
+  padding:0;
+}
+
+/* This is the native select, we're making everything the text invisible so we can see the button styles in the wrapper */
+.dropdown select {
+  width:100%;
+  margin:0;
+  background:none;
+  border: 1px solid transparent;
+  outline: none;
+  /* Prefixed box-sizing rules necessary for older browsers */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  /* Remove select styling */
+  appearance: none;
+  -webkit-appearance: none;
+  /* Magic font size number to prevent iOS text zoom */
+  font-size:1.25em;
+  /* General select styles: change as needed */
+  /* font-weight: bold; */
+  color: #444;
+  padding: .6em 1.9em .5em .8em;
+  line-height:1.3;
+}
+.dropdown select,
+label {
+  font-family: AvenirNextCondensed-DemiBold, Corbel, "Lucida Grande","Trebuchet Ms", sans-serif;
+}
+
+/* Custom arrow sits on top of the select - could be an image, SVG, icon font, etc. or the arrow could just baked into the bg image on the select */
+
+.dropdown::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 8px;
+  top: 50%;
+  right: 1em;
+  margin-top:-4px;
+  z-index: 2;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpolygon fill='rgb(102,102,102)' points='8,12 0,0 16,0'/%3E%3C/svg%3E") 0 0 no-repeat;  
+  /* These hacks make the select behind the arrow clickable in some browsers */
+  pointer-events:none;
+}
+
+/* This hides native dropdown button arrow in IE 10/11+ so it will have the custom appearance, IE 9 and earlier get a native select */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .dropdown select::-ms-expand {
+    display: none;
+  }
+  /* Removes the odd blue bg color behind the text in IE 10/11 and sets the text to match the focus style text */
+  select:focus::-ms-value {
+    background: transparent;
+    color: #222;
+  }
+}
+
+/* Firefox >= 2 -- Older versions of FF (v2 - 6) won't let us hide the native select arrow, so we'll just hide the custom icon and go with native styling */
+/* Show only the native arrow */
+body:last-child .dropdown::after, x:-moz-any-link {
+  display: none;
+}
+/* reduce padding */
+body:last-child .dropdown select, x:-moz-any-link {
+  padding-right: .8em;
+}
+
+/* Firefox 7+ -- Will let us hide the arrow, but inconsistently (see FF 30 comment below). We've found the simplest way to hide the native styling in FF is to make the select bigger than its container. */
+/* The specific FF selector used below successfully overrides the previous rule that turns off the custom icon; other FF hacky selectors we tried, like `*>.dropdown::after`, did not undo the previous rule */
+
+/* Set overflow:hidden on the wrapper to clip the native select's arrow, this clips hte outline too so focus styles are less than ideal in FF */
+_::-moz-progress-bar, body:last-child .dropdown {
+  overflow: hidden;
+}
+/* Show only the custom icon */
+_::-moz-progress-bar, body:last-child .dropdown:after {
+  display: block;
+}
+_::-moz-progress-bar, body:last-child .dropdown select {
+  /* increase padding to make room for menu icon */
+  padding-right: 1.9em;
+  /* `window` appearance with these text-indent and text-overflow values will hide the arrow FF up to v30 */
+  -moz-appearance: window;
+  text-indent: 0.01px;
+  text-overflow: "";
+  /* for FF 30+ on Windows 8, we need to make the select a bit longer to hide the native arrow */
+  width: 110%;
+}
+
+/* At first we tried the following rule to hide the native select arrow in Firefox 30+ in Windows 8, but we'd rather simplify the CSS and widen the select for all versions of FF since this is a recurring issue in that browser */
+/* @supports (-moz-appearance:meterbar) and (background-blend-mode:difference,normal) {
+.dropdown select { width:110%; }
+}   */
+
+
+/* Firefox 7+ focus style - This works around the issue that -moz-appearance: window kills the normal select focus. Using semi-opaque because outline doesn't handle rounded corners */
+_::-moz-progress-bar, body:last-child .dropdown select:focus {
+  outline: 2px solid rgba(180,222,250, .7);
+}
+
+
+/* Opera - Pre-Blink nix the custom arrow, go with a native select button */
+x:-o-prefocus, .dropdown::after {
+  display:none;
+}
+
+
+/* Hover style */
+.dropdown:hover {
+  border:1px solid #888;
+}
+
+/* Focus style */
+select:focus {
+  outline:none;
+  box-shadow: 0 0 1px 3px rgba(180,222,250, 1);
+  background-color:transparent;
+  color: #222;
+  border:1px solid #aaa;
+}
+
+
+/* Firefox focus has odd artifacts around the text, this kills that */
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
+option {
+  font-weight:normal;
+}
+
+
+/* These are just demo button-y styles, style as you like */
+.button {
+  border: 1px solid #bbb;
+  border-radius: .3em;
+  box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+  background: #f3f3f3; /* Old browsers */
+  background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%); /* W3C */
+}
+
+.output {
+  margin: 0 auto;
+  padding: 1em; 
+}
+.colors {
+  padding: 2em;
+  color: #fff;
+  display: none;
+}
+.red {
+  background: #c04;
+} 
+.yellow {
+  color: #000;
+  background: #f5e000;
+} 
+.blue {
+  background: #079;
+}
+footer {
+  margin: 5em auto 3em;
+  padding: 2em 2.5%;
+  text-align: center;
+}
+a {
+  color: #c04;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #903;
+  text-decoration: underline;
+}
+
+.stylebutton{
+    border-color: #0062cc;
+    width: 80px;
+    height: 80px;
+    font-size: 35px;  
+    color: #0062cc;
+    background-color: #fcfdff; 
+}
+
+.stylebuttonw{
+    border-color: #0062cc;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;  
+    color: #0062cc;
+    background-color: #fcfdff; 
+}
+
+.stylebuttonUndo{
+    border-color: #0be40d;
+    width: 121px;
+    height: 80px;
+    font-size: 35px;  
+    color: white;
+    background-color: #0be40d; 
+}
+
+.stylebuttonnotoutw{
+    border-color: #0be40d;
+    width: 175px;
+    height: 50px;
+    font-size: 25px;  
+    color: white;
+    background-color: #0be40d; 
+}
+
+.stylebuttonOut{
+    border-color: #cc1800;
+    width: 121px;
+    height: 80px;
+    font-size: 35px;  
+    color: white;
+    background-color: #cc1800; 
+}
+
+.stylebuttonoutw{
+    border-color: #cc1800;
+    width: 175px;
+    height: 50px;
+    font-size: 25px;  
+    color: white;
+    background-color: #cc1800; 
+}
+
+.stylebutton5{
+    border-color: #0062cc;
+    width: 121px;
+    height: 80px;
+    font-size: 35px;  
+    color: #0062cc;
+    background-color: #fcfdff; 
+}
+</style>
+
+<body>
+
+<center>
+
+<div class="enterTeamNamePage">
+  <div class="row">
+    <div class="container">
+      <div class="col-sm-12">
+          <label class="wrapper" for="states">Team 1</label>
+      </div>
+      <div class="col-sm-12">
+          <div class="button dropdown"> 
+            <select id="teamOneSelector">
+               <option value="cd">Team One</option>
+               <option value="Vikings">Vikings | Sc1</option>
+               <option value="Kings">Kings | Sc2</option>
+               <option value="Lions">Lions | Sc3</option>
+               <option value="Warriors">Warriors | Sc4</option>
+               <option value="Giants">Giants | Sc5</option>             
+            </select>
+          </div>   
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="container">
+      <div class="col-sm-12">
+          <label class="wrapper" for="states">Team 2</label>
+      </div>
+      <div class="col-sm-12">
+          <div class="button dropdown"> 
+            <select id="teamTwoSelector">
+              <option value="cd">Team Two</option>
+               <option id="Vikings" value="Vikings">Vikings | Sc1</option>
+               <option value="Kings">Kings | Sc2</option>
+               <option value="Lions">Lions | Sc3</option>
+               <option value="Warriors">Warriors | Sc4</option>
+               <option value="Giants">Giants | Sc5</option>             
+            </select>
+          </div>   
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 30px;">
+    <div class="container">
+      <div class="col-sm-12">
+        <button id="teamSubmit" type="button" class="btn btn-success">Start Score Enter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scoreEnterPageTeamOne" style="display: none;">
+  <div class="row">
+    <div class="container">
+      <p id='teamOneName' style="font-size: 25px; text-align: center; font-weight: bold;"><strong>Category name</strong></p>
+    </div>  
+  </div>
+  <div class="row">
+      <div class="col-sm-12">
+        <p class="wrapper" for="states">Score Enter</p>
+      </div>
+  </div>
+  <div class="row">
+    <button id="zero" type="button" class="btn btn-primary stylebutton">0</button>
+    <button id="one" type="button" class="btn btn-primary stylebutton">1</button>
+    <button id="two" type="button" class="btn btn-primary stylebutton">2</button>
+    <button id="undo" type="button" class="btn btn-primary stylebuttonUndo">UNDO</button>
+  </div>
+  <div class="row">
+    <button id="three" type="button" class="btn btn-primary stylebutton">3</button>
+    <button id="four" type="button" class="btn btn-primary stylebutton">4</button>
+    <button id="six" type="button" class="btn btn-primary stylebutton">6</button>
+    <button id="five" type="button" class="btn btn-primary stylebutton5">5</button>
+  </div> 
+  <div class="row">
+    <button id="wd" type="button" class="btn btn-primary stylebutton">WD</button>
+    <button id="nb" type="button" class="btn btn-primary stylebutton">NB</button>
+    <button id="bye" type="button" class="btn btn-primary stylebutton">BYE</button>
+    <button id="out" type="button" class="btn btn-primary stylebuttonOut">OUT</button>
+  </div>
+  <div id="wdScore" class="row" style="margin-top: 20px; display: none;">
+    <button id="wd0" type="button" class="btn btn-primary stylebuttonw">0</button>
+    <button id="wd1" type="button" class="btn btn-primary stylebuttonw">1</button>
+    <button id="wd2" type="button" class="btn btn-primary stylebuttonw">2</button>
+    <button id="wd3" type="button" class="btn btn-primary stylebuttonw">3</button>
+    <button id="wd4" type="button" class="btn btn-primary stylebuttonw">4</button>
+    <button id="wd5" type="button" class="btn btn-primary stylebuttonw">5</button>
+    <button id="wd6" type="button" class="btn btn-primary stylebuttonw">6</button>
+    <button id="wdout" type="button" class="btn btn-primary stylebuttonoutw">Out</button>
+    <button id="wdnotout" type="button" class="btn btn-primary stylebuttonnotoutw">Not Out</button>
+  </div>
+  <div id="wdScore" class="row" style="margin-top: 80px;">
+    <button id="firstTeamEnd" type="button" class="btn btn-primary stylebuttonnotoutw" style="width: 350px;">End First Inning</button>  
+  </div>
+  <div id="wdScore" class="row" style="margin-top: 80px; ">
+    <button id="endMatch" type="button" class="btn btn-primary stylebuttonnotoutw" style="width: 350px;display: none;">End Match</button>  
+  </div>  
+</div>
+
+</center>
+</body>
+
+</html>
+
+
+<script type="text/javascript">
+
+  teamOneName = '';
+  teamTwoName = '';
+
+  setValueTemp = 1;
+
+  $("#teamSubmit").attr("disabled", true);
+  $("#teamTwoSelector").attr("disabled", true);
+
+  $(function() {
+    $('#teamOneSelector').change(function(){
+      teamOneName = $(this).val();
+      $("#teamOneSelector").attr("disabled", true);
+      $("#teamTwoSelector").attr("disabled", false);
+    });
+  }); 
+
+  $(function() {
+    $('#teamTwoSelector').change(function(){
+      teamTwoName = $(this).val();
+      $("#teamTwoSelector").attr("disabled", true);
+      $("#teamSubmit").attr("disabled", false);
+    });
+  });
+
+  $('#teamSubmit').click(function() {
+    $('.enterTeamNamePage').hide(0);
+    $('.scoreEnterPageTeamOne').show(0);
+    $("#teamOneName").text(teamOneName);
+
+    savedata(setValue = setValueTemp);
+
+    var teamNames = {
+        teamOneNameS: teamOneName,
+        teamTwoNameS: teamTwoName
+    };
+    localStorage.setItem('teamNamesSave', JSON.stringify(teamNames));    
+  });
+
+  currentScore = 0;
+  currentBall = 0;
+  currentWickets = 0;
+
+
+  var teamOneData = {
+      score: currentScore,
+      wickets: currentWickets,
+      balls: currentBall
+  };
+  localStorage.setItem('teamOneDataSave', JSON.stringify(teamOneData));
+
+  var teamTwoData = {
+      score: currentScore,
+      wickets: currentWickets,
+      balls: currentBall
+  };
+  localStorage.setItem('teamTwoDataSave', JSON.stringify(teamTwoData));
+
+  lastScore = 0;
+  lastBall = 0;
+  lastWickets = 0;  
+
+  $('#zero').click(function(){
+    lastScore = currentScore;
+    lastBall = currentBall;
+    currentScore = currentScore+0;
+    currentBall = currentBall+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#one').click(function(){
+    lastScore = currentScore;
+    lastBall = currentBall;
+    currentScore = currentScore+1;
+    currentBall = currentBall+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#two').click(function(){
+    lastScore = currentScore;
+    lastBall = currentBall;
+    currentScore = currentScore+2;
+    currentBall = currentBall+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#three').click(function(){
+    lastScore = currentScore;
+    lastBall = currentBall;
+    currentScore = currentScore+3;
+    currentBall = currentBall+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#four').click(function(){
+    lastScore = currentScore;
+    lastBall = currentBall;
+    currentScore = currentScore+4;
+    currentBall = currentBall+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#five').click(function(){
+    lastScore = currentScore;
+    lastBall = currentBall;
+    currentScore = currentScore+5;
+    currentBall = currentBall+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#six').click(function(){
+    lastScore = currentScore;
+    lastBall = currentBall;
+    currentScore = currentScore+6;
+    currentBall = currentBall+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+
+  function savedata(setValue = 0){
+
+    teamOneData.score = currentScore;
+    teamOneData.wickets = currentWickets;
+    teamOneData.balls = currentBall;
+
+    teamTwoData.score = currentScore;
+    teamTwoData.wickets = currentWickets;
+    teamTwoData.balls = currentBall;
+
+    console.log(setValue);
+    if( setValue == 1 ){
+      localStorage.setItem('teamOneDataSave', JSON.stringify(teamOneData));
+    }
+    else{
+      localStorage.setItem('teamTwoDataSave', JSON.stringify(teamTwoData)); 
+    }
+  }
+
+  function disableKey(){
+    $("#one").attr("disabled", true);
+    $("#two").attr("disabled", true);
+    $("#three").attr("disabled", true);
+    $("#zero").attr("disabled", true);
+    $("#four").attr("disabled", true);
+    $("#five").attr("disabled", true);
+    $("#six").attr("disabled", true);
+    $("#undo").attr("disabled", true);
+    $("#wd").attr("disabled", true);
+    $("#nb").attr("disabled", true);
+    $("#bye").attr("disabled", true);
+    $("#out").attr("disabled", true);
+  }
+
+  function activeKey(){
+    $("#one").attr("disabled", false);
+    $("#two").attr("disabled", false);
+    $("#three").attr("disabled", false);
+    $("#zero").attr("disabled", false);
+    $("#four").attr("disabled", false);
+    $("#five").attr("disabled", false);
+    $("#six").attr("disabled", false);
+    $("#undo").attr("disabled", false);
+    $("#wd").attr("disabled", false);
+    $("#nb").attr("disabled", false);
+    $("#bye").attr("disabled", false);
+    $("#out").attr("disabled", false);
+
+    $('#wdScore').hide(0);
+  }
+
+  $('#wd').click(function(){
+    disableKey();
+    $('#wdScore').show(0);
+
+    lastScore = currentScore;
+    currentScore = currentScore+1;
+    
+  });
+  $('#nb').click(function(){
+    disableKey();
+    $('#wdScore').show(0);
+
+    lastScore = currentScore;
+    currentScore = currentScore+1;
+    
+  });
+  $('#undo').click(function(){
+    currentScore = lastScore;
+    currentBall = lastBall;
+    currentWickets = lastWickets;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#out').click(function(){
+    lastBall = currentBall;
+    lastWickets = currentWickets;
+    lastScore = currentScore;
+    currentBall = currentBall+1;
+    currentWickets = currentWickets+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+
+  /*wide*/
+  $('#wd0').click(function(){
+    lastScore = currentScore-1;
+    currentScore = currentScore+0;
+  });
+  $('#wd1').click(function(){
+    lastScore = currentScore-1;
+    currentScore = currentScore+1;
+  });
+  $('#wd2').click(function(){
+    lastScore = currentScore-1;
+    currentScore = currentScore+2;
+  });
+  $('#wd3').click(function(){
+    lastScore = currentScore-1;
+    currentScore = currentScore+3;
+  });
+  $('#wd4').click(function(){
+    lastScore = currentScore-1;
+    currentScore = currentScore+4;
+  });
+  $('#wd5').click(function(){
+    lastScore = currentScore-1;
+    currentScore = currentScore+5;
+  });
+  $('#wd6').click(function(){
+    lastScore = currentScore-1;
+    currentScore = currentScore+6;
+  });
+  $('#wdout').click(function(){
+    activeKey();
+    lastBall = currentBall;
+    lastWickets = currentWickets;
+    currentWickets = currentWickets+1;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+  $('#wdnotout').click(function(){
+    activeKey();
+    lastBall = currentBall;
+    lastWickets = currentWickets;
+
+    savedata(setValue = setValueTemp);
+
+    console.log("score:" + currentScore + " balls:" + currentBall + " wicket:" + currentWickets);
+  });
+
+  $('#firstTeamEnd').click(function() {
+    $('.scoreEnterPageTeamOne').show(0);
+    $('#firstTeamEnd').hide(0);
+    $('#endMatch').show(0);
+    $("#teamOneName").text(teamTwoName);
+
+    setValueTemp = 2;
+
+    currentScore = 0;
+    currentBall = 0;
+    currentWickets = 0;
+
+    lastScore = 0;
+    lastBall = 0;
+    lastWickets = 0;     
+  });
+
+  $('#endMatch').click(function() {
+
+  });  
+
+</script>

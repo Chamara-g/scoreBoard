@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title></title>
+	<meta charset="UTF-8" />
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  	<meta http-equiv="refresh" content="5"/>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<div class="row" style="margin-top: 30px">
+		<div class="container">
+			<p style="text-align: center; font-family: Trebuchet MS"><strong>KSSL2019, Dec 29 2019</strong></p>
+		</div>
+	</div>
+	<center>
+	<div class="scoreSet">
+	</div>
+	</center>
+</body>
+
+</html>
+
+<script type="text/javascript">
+
+	var teamNames = JSON.parse(localStorage.getItem('teamNamesSave'));
+
+	var teamOneData = JSON.parse(localStorage.getItem('teamOneDataSave'));
+	console.log(teamOneData);
+
+	var teamTwoData = JSON.parse(localStorage.getItem('teamTwoDataSave'));
+	console.log(teamTwoData);
+
+	$('.scoreSet').append(
+		'<div class="row" style="margin-top: 30px">' +
+			'<div class="col-sm-6">' +
+				'<div><img src="teams/'+ teamNames.teamOneNameS +'.png" alt="" style="height: 100px;"></div>' +
+				'<div><p style="font-family: Trebuchet MS; font-size: 40px;" >'+ teamNames.teamOneNameS +'</p></div>' +
+				'<div><strong><p style="font-family: Trebuchet MS; font-size: 150px;">'+ teamOneData.score +' - '+ teamOneData.wickets +'</p></strong></div>' +
+				'<div><p style="font-family: Trebuchet MS; font-size: 30px;" >'+ teamOneData.balls +' Balls</p></div>' +
+			'</div>' +
+			'<div class="col-sm-6">' +
+				'<div><img src="teams/'+ teamNames.teamTwoNameS +'.png" alt="" style="height: 100px;"></div>' +
+				'<div><p style="font-family: Trebuchet MS; font-size: 40px;" >'+ teamNames.teamTwoNameS +'</p></div>' +
+				'<div><strong><p style="font-family: Trebuchet MS; font-size: 150px;">'+ teamTwoData.score +' - '+ teamTwoData.wickets +'</p></strong></div>' +
+				'<div><p style="font-family: Trebuchet MS; font-size: 30px;" >'+ teamTwoData.balls +' Balls</p></div>' +
+			'</div>' +
+		'</div>'		
+	);
+
+</script>
